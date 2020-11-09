@@ -10,9 +10,13 @@
     "require": {
         "php": "^7.2",
         "fideloper/proxy": "^4.0",
+        "laracasts/flash": "^3.2",
         "laravel/framework": "^6.18.35",
+        "laravel/socialite": "^5.1",
         "laravel/tinker": "^2.0",
-        "michelf/php-markdown": "^1.9"
+        "laravelcollective/html": "^6.2",
+        "michelf/php-markdown": "^1.9",
+        "spatie/laravel-permission": "^3.17"
     },
     "require-dev": {
         "facade/ignition": "^1.4",

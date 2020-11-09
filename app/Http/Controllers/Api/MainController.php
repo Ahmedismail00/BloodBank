@@ -11,6 +11,7 @@ use App\Models\BloodType;
 use App\Models\Category;
 use App\Models\Contact;
 use App\Models\DonationRequest;
+use App\Models\Token;
 
 class MainController extends Controller
 {
@@ -33,6 +34,11 @@ class MainController extends Controller
         $posts = Post::all();
         return ResponseJson(1,'success',$posts);
     }
+    public function donation_requests()
+    {
+        $donation_request = DonationRequest::all();
+        return ResponseJson(1,'success',$donation_request);
+    }
     public function blood_types()
     {
         $blood_types = BloodType::all();
@@ -43,7 +49,7 @@ class MainController extends Controller
         $categories = Category::all();
         return ResponseJson(1,'success',$categories);
     }
-    public function donation_requests(Request $request)
+    public function donation_request_create(Request $request)
     {
         $validator = validator()->make($request->all(),[
             'patient_name' => 'required',
@@ -51,13 +57,35 @@ class MainController extends Controller
             'hospital_name' => 'required',
             'patient_age' => 'required',
             'bags_num' => 'required',
+            'blood_type_id' => 'required',
+            'city_id' => 'required|exists:cities,id',
+            'phone' => 'required|digits:11'
         ]);
         if($validator->fails()){
             return responseJson(0 , 'unsuccessful' , $validator->errors()->all());
         }
-        $donation_request = DonationRequest::Create($request->all());
-        $donation_request->save();
-        return ResponseJson(1,'success',$donation_request);
+        $donation_request = $request->user()->donationRequest()->Create($request->all());
+        $clientIds = $donation_request->city->governorate->clients()->whereHas('bloodType',function($q) use ($request){
+            $q->where('blood_types.id',$request->blood_type_id);
+        })->pluck('clients.id')->toArray();
+
+        dd($clientIds);
+
+        if (count($clientIds)) 
+        {
+            $notification = $donation_request->notificaions()->create([
+                'title'=>  'احتاج متبرع ',
+                'content'=> $donation_request->bloodType()->name . ' محتاج متبرع لفصيلة'
+            ]);
+            $notification->clients()->attach($clientIds);
+
+            // get token for FCM (push notification using firebasse cloud)
+            
+        }
+
+
+
+        
     }
     public function contact(Request $request)
     {
@@ -74,7 +102,7 @@ class MainController extends Controller
         return responseJson('1','success' , $contact);
     }
 
-    public function postFavourites(Request $request)
+    public function postFavourite(Request $request)
     {
         $validation = validator()->make($request->all(),[
             'post_id' => 'required|exists:posts,id'
@@ -86,8 +114,12 @@ class MainController extends Controller
 
         $toggle = $request->user()->posts()->toggle($request->post_id);
         return responseJson(1,'success',$toggle);
-
-
+    }
+    
+    public function myFavourites(Request $request)
+    {
+        $posts = $request->user()->posts()->latest()->paginate(20);
+        return responseJson(1 , 'loaded' , $posts);
     }
 
 

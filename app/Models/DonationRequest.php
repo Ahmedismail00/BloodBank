@@ -9,9 +9,9 @@ class DonationRequest extends Model
 
     protected $table = 'donation_requests';
     public $timestamps = true;
-    protected $fillable = array('client_id','patient_name', 'patient_phone', 'city_id', 'hospital_name', 'blood_type_id', 'patient_age', 'bags_num', 'hospital_address', 'details','latitude','longitude');
+    protected $fillable = array('patient_name', 'patient_phone', 'city_id', 'hospital_name', 'blood_type_id', 'patient_age', 'bags_num', 'hospital_address', 'details', 'longitude','latitude');
 
-    public function cities()
+    public function city()
     {
         return $this->belongsTo('App\Models\City');
     }
@@ -26,9 +26,9 @@ class DonationRequest extends Model
         return $this->belongsTo('App\Models\Client');
     }
 
-    public function blood_type()
+    public function bloodType()
     {
-        return $this->hasOne('App\Models\BloodType');
+        return $this->belongsTo('App\Models\BloodType');
     }
 
 }

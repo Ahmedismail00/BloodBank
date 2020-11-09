@@ -13,12 +13,12 @@ class BloodType extends Model
 
     public function clients()
     {
-        return $this->hasMany('App\Models\Client');
+        return $this->belongsToMany('App\Models\Client');
     }
 
-    public function donation_request()
+    public function donationRequest()
     {
-        return $this->belongsTo('App\Models\DonationRequest');
+        return $this->hasMany('App\Models\DonationRequest');
     }
 
 }

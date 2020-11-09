@@ -16,7 +16,7 @@ class Category extends Model
         return $this->hasMany('App\Models\Post');
     }
 
-    public function favourite_posts()
+    public function favouritePosts()
     {
         return $this->hasMany('App\Models\FavouritePost');
     }

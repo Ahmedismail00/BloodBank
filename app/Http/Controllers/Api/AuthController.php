@@ -12,6 +12,7 @@ use App\Models\BloodType;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\reset_password;
+use App\Token;
 use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
@@ -143,23 +144,51 @@ class AuthController extends Controller
         $loginUser->update($request->all());
         $loginUser->save();
 
-        // if($request->has('governorate_id'))
-        // {
-        //     // [1,4,5,6]
-            
-        //     // $loginUser->cities()->sync($request->city_id);
-        // }
-
-        if($request->has('blood_types'))
+        if($request->has('governorate_id'))
         {
-            $bloodType = BloodType::where('name',$request->bloodtype)->first();
-            $bloodType->bloodType()->sync($request->governorate_id);
+              $loginUser->cities()->sync($request->city_id);
+        }
+
+        if($request->has('blood_type'))
+        {
+            $bloodType = BloodType::where('name',$request->blood_type)->first();
+            $bloodType->bloodType()->sync($request->blood_type);
         }
     
         return responseJson(1,'successfull',[
             'api_token'=>$request->user()->api_token,
             'user' => $loginUser
             ]);        
+    }
+
+    public function register_token(Request $request)
+    {
+        $validation = validator()->make($request->all(),[
+            'token' => 'required',
+            'platform' => 'required|in:android,ios'
+        ]);
+
+        if($validation->fails()){
+            return responseJson(0 , $validation->errors()->first());
+        }
+
+        Token::where('token',$request->token)->delete();
+        $request->user()->token()->create($request->all());
+        return responseJson(1 , 'success');
+    }
+
+    public function remove_token(Request $request)
+    {
+        $validation = validator()->make($request->all(),[
+            'token' => 'required'
+        ]);
+
+        if($validation->fails()){
+            return responseJson(0 , $validation->errors()->first());
+        }
+
+        Token::where('token',$request->token)->delete();
+        return responseJson(1 , 'success');
     }
     
 }

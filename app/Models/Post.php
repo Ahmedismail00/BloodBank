@@ -9,16 +9,16 @@ class Post extends Model
 
     protected $table = 'posts';
     public $timestamps = true;
-    protected $fillable = array('title', 'image', 'content');
+    protected $fillable = array('title', 'image', 'content','category_id');
 
     public function categories()
     {
-        return $this->belongsTo('App\Models\Category');
+        return $this->belongsToMany('App\Models\Category');
     }
 
     public function clients()
     {
-        return $this->hasMany('App\Models\Client');
+        return $this->belongsToMany('App\Models\Client');
     }
 
 }

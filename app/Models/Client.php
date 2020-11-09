@@ -4,17 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
-class Client extends Authenticatable 
+class Client extends Authenticatable
 {
+    use HasRoles;
 
     protected $table = 'clients';
     public $timestamps = true;
-    protected $fillable = array('phone', 'email','password','blood_type_id', 'name', 'd_o_b', 'last_donation_date', 'city_id','api_token');
-
+    protected $fillable = array('phone', 'email', 'blood_type_id', 'name', 'd_o_b', 'last_donation_date', 'city_id', 'api_token', 'password','pin_code');
+    protected $hidden = [ 'password', 'remember_token','api_token','pin_code' ];
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
     public function bloodType()
     {
-        return $this->belongsTo('App\Models\BloodType');
+        return $this->belongsToMany('App\Models\BloodType');
     }
 
     public function donationRequest()
@@ -24,19 +30,26 @@ class Client extends Authenticatable
 
     public function posts()
     {
-        return $this->hasMany('App\Models\Post');
+        return $this->belongsToMany('App\Models\Post');
     }
 
     public function notifications()
     {
         return $this->hasMany('App\Models\Notification');
     }
+
     public function cities()
     {
-        return $this->belongsTo('App\Models\City');
+        return $this->belongsToMany('App\Models\City');
     }
-    protected $hidden = [
-        'password','api_token'
-    ];
+    public function governorate()
+    {
+        return $this->belongsToMany('App\Models\Governorate');
+    }
+
+    public function contacts()
+    {
+        return $this->hasMany('App\Models\Contact');
+    }
 
 }

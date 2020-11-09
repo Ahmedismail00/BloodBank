@@ -11,10 +11,27 @@
 |
 */
 
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes([
 
-Route::get('/home', 'HomeController@index')->name('home');
+]);
+Route::group(['middleware'=> ['auth','auto-check-permission']],function(){
+    Route::get('/home', 'HomeController@index')->name('home');
+    Route::resource('categories', 'CategoriesController');
+    Route::resource('cities', 'CitiesController');
+    Route::resource('clients', 'ClientsController');
+    Route::resource('donationRequests', 'DonationRequestsController');
+    Route::resource('governorates', 'GovernoratesController');
+    Route::resource('posts', 'PostsController');
+    Route::resource('contacts', 'ContactsController');
+    Route::resource('settings', 'SettingsController');
+    Route::get('logout','HomeController@logout');
+    Route::resource('users','UsersController');
+    Route::resource('roles','RoleController');
+
+});
+
