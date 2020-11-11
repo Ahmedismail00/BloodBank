@@ -32,6 +32,10 @@ class Client extends Authenticatable
     {
         return $this->belongsToMany('App\Models\Post');
     }
+    public function favourites()
+    {
+        return $this->belongsToMany('App\Models\Post');
+    }
 
     public function notifications()
     {
@@ -50,6 +54,10 @@ class Client extends Authenticatable
     public function contacts()
     {
         return $this->hasMany('App\Models\Contact');
+    }
+    public function tokens()
+    {
+        return $this->hasMany('App\Models\tokens');
     }
 
 }

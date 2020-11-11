@@ -47,7 +47,7 @@
                                 <th>{{$loop->iteration}}</th>
                                 <td>{{$record->name}}</td>
                                 <td>{{$record->email}}</td>
-                                <td>@foreach(auth()->user()->getRoleNames() as $role)
+                                <td>@foreach($record->getRoleNames() as $role)
                                     <span class="bg-dark rounded p-1">{{$role}}</span>
                                     @endforeach</td>
                                 <td><a href="{{url(route('users.edit',$record->id))}}" class="btn btn-success"><i class="fa fa-edit"></i>Edit</a> </td>

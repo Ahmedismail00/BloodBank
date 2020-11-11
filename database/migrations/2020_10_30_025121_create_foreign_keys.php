@@ -10,28 +10,28 @@ class CreateForeignKeys extends Migration {
 	{
 		Schema::table('clients', function(Blueprint $table) {
 			$table->foreign('blood_type_id')->references('id')->on('blood_types')
-						->onDelete('no action')
-						->onUpdate('no action');
+						->onDelete('cascade')
+						->onUpdate('cascade');
 		});
 		Schema::table('clients', function(Blueprint $table) {
 			$table->foreign('city_id')->references('id')->on('cities')
-						->onDelete('no action')
-						->onUpdate('no action');
+						->onDelete('cascade')
+						->onUpdate('cascade');
 		});
 		Schema::table('cities', function(Blueprint $table) {
 			$table->foreign('governorate_id')->references('id')->on('governorates')
-						->onDelete('no action')
-						->onUpdate('no action');
+						->onDelete('cascade')
+						->onUpdate('cascade');
 		});
 		Schema::table('posts', function(Blueprint $table) {
 			$table->foreign('category_id')->references('id')->on('categories')
-						->onDelete('no action')
-						->onUpdate('no action');
+						->onDelete('cascade')
+						->onUpdate('cascade');
 		});
 		Schema::table('favourite_posts', function(Blueprint $table) {
 			$table->foreign('category_id')->references('id')->on('categories')
-						->onDelete('no action')
-						->onUpdate('no action');
+						->onDelete('cascade')
+						->onUpdate('cascade');
 		});
 		Schema::table('donation_requests', function(Blueprint $table) {
 			$table->foreign('city_id')->references('id')->on('cities')
@@ -40,8 +40,8 @@ class CreateForeignKeys extends Migration {
 		});
 		Schema::table('donation_requests', function(Blueprint $table) {
 			$table->foreign('blood_type_id')->references('id')->on('blood_types')
-						->onDelete('no action')
-						->onUpdate('no action');
+						->onDelete('cascade')
+						->onUpdate('cascade');
 		});
 		Schema::table('donation_requests', function(Blueprint $table) {
 			$table->foreign('client_id')->references('id')->on('clients')
@@ -50,44 +50,59 @@ class CreateForeignKeys extends Migration {
 		});
 		Schema::table('notifications', function(Blueprint $table) {
 			$table->foreign('donation_request_id')->references('id')->on('donation_requests')
-						->onDelete('no action')
-						->onUpdate('no action');
+						->onDelete('cascade')
+						->onUpdate('cascade');
 		});
 		Schema::table('notifications', function(Blueprint $table) {
 			$table->foreign('client_id')->references('id')->on('clients')
-						->onDelete('no action')
-						->onUpdate('no action');
+						->onDelete('cascade')
+						->onUpdate('cascade');
 		});
+        Schema::table('client_notification', function(Blueprint $table) {
+            $table->foreign('client_id')->references('id')->on('clients')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+        });
+        Schema::table('client_notification', function(Blueprint $table) {
+            $table->foreign('notification_id')->references('id')->on('notifications')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+        });
 		Schema::table('client_post', function(Blueprint $table) {
 			$table->foreign('client_id')->references('id')->on('clients')
-						->onDelete('no action')
-						->onUpdate('no action');
+						->onDelete('cascade')
+						->onUpdate('cascade');
 		});
 		Schema::table('client_post', function(Blueprint $table) {
-			$table->foreign('post_id')->references('id')->on('favourite_posts')
+			$table->foreign('post_id')->references('id')->on('posts')
 						->onDelete('cascade')
 						->onUpdate('cascade');
 		});
 		Schema::table('client_governorate', function(Blueprint $table) {
 			$table->foreign('client_id')->references('id')->on('clients')
-						->onDelete('no action')
-						->onUpdate('no action');
+						->onDelete('cascade')
+						->onUpdate('cascade');
 		});
 		Schema::table('client_governorate', function(Blueprint $table) {
 			$table->foreign('governorate_id')->references('id')->on('governorates')
-						->onDelete('no action')
-						->onUpdate('no action');
+						->onDelete('cascade')
+						->onUpdate('cascade');
 		});
 		Schema::table('blood_type_client', function(Blueprint $table) {
 			$table->foreign('blood_type_id')->references('id')->on('blood_types')
-						->onDelete('no action')
-						->onUpdate('no action');
+						->onDelete('cascade')
+						->onUpdate('cascade');
 		});
 		Schema::table('blood_type_client', function(Blueprint $table) {
 			$table->foreign('client_id')->references('id')->on('clients')
-						->onDelete('no action')
-						->onUpdate('no action');
+						->onDelete('cascade')
+						->onUpdate('cascade');
 		});
+        Schema::table('tokens', function(Blueprint $table) {
+            $table->foreign('client_id')->references('id')->on('clients')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+        });
 	}
 
 	public function down()
@@ -122,6 +137,12 @@ class CreateForeignKeys extends Migration {
 		Schema::table('notifications', function(Blueprint $table) {
 			$table->dropForeign('notifications_client_id_foreign');
 		});
+        Schema::table('client_notification', function(Blueprint $table) {
+            $table->dropForeign('client_notification_client_id_foreign');
+        });
+        Schema::table('client_notification', function(Blueprint $table) {
+            $table->dropForeign('client_notification_notification_id_foreign');
+        });
 		Schema::table('contacts', function(Blueprint $table) {
 			$table->dropForeign('contacts_client_id_foreign');
 		});
@@ -143,5 +164,8 @@ class CreateForeignKeys extends Migration {
 		Schema::table('blood_type_client', function(Blueprint $table) {
 			$table->dropForeign('blood_type_client_client_id_foreign');
 		});
+        Schema::table('tokens', function(Blueprint $table) {
+            $table->dropForeign('tokens_client_id_foreign');
+        });
 	}
 }

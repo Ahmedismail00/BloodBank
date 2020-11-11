@@ -14,8 +14,14 @@ class CreateTokensTable extends Migration
     public function up()
     {
         Schema::create('tokens', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
+            $table->string('token', 255);
+            $table->enum('type', array('android', 'ios'));
+            $table->integer('client_id')->unsigned();
             $table->timestamps();
+
+
+
         });
     }
 

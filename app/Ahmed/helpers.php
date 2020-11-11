@@ -8,7 +8,7 @@ function responseJson($status , $message , $data = null)
         'data' => $data
     ];
     return response()->json($response);
-} 
+}
 
 
 function smsMisr($to,$message)
@@ -22,7 +22,7 @@ function smsMisr($to,$message)
             "mobile" => '2' . $to,
             "message" => $message,
         );
- 
+
         $rest = curl_init();
         curl_setopt($rest, CURLOPT_URL, $url.http_build_query($push_payload));
         curl_setopt($rest, CURLOPT_POST, 1);
@@ -37,4 +37,11 @@ function smsMisr($to,$message)
         curl_close($rest);
         return $response;
     }
-        
+    function create_permission($name , $route)
+    {
+        DB::table('permissions')->insert([
+            'name' => $name,
+            'guard_name' => 'web',
+            'routes' => $route
+        ]);
+    }

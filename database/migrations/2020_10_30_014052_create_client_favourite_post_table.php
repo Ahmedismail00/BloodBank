@@ -17,6 +17,6 @@ class CreateClientFavouritePostTable extends Migration {
 
 	public function down()
 	{
-		Schema::drop('client_favourite_post');
+		Schema::drop('client_post');
 	}
 }

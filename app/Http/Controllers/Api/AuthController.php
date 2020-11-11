@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Validator;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\City;
@@ -31,19 +30,22 @@ class AuthController extends Controller
             return responseJson(0,'validator error',$validator->errors()->all());
         }
         $client = Client::create($request->all());
+        $client->bloodType()->sync($request->blood_type_id);
+        $governorate_id = City::where('id',$request->city_id)->pluck('governorate_id');
+        $client->governorate()->sync($governorate_id);
         $client->api_token = Str::random(60);
         $client->save();
         return responseJson(1,'done',[
             'api_token'=>$client->api_token,
             'client' => $client
-        ]); 
+        ]);
     }
-    
+
     public function login(Request $request)
     {
         $validator = validator()->make($request->all(),[
             'phone' => 'required',
-            'password' => 'required'            
+            'password' => 'required'
         ]);
         if($validator->fails()){
             return responseJson(0,'validator error',$validator->errors()->first());
@@ -78,7 +80,7 @@ class AuthController extends Controller
         if($user){
             $code = rand(1111,999);
             $user->pin_code = $code;
-            
+
             if($user->save())
             {
                 smsMisr($request->phone,'ur request code is '.$code);       // sms
@@ -111,12 +113,12 @@ class AuthController extends Controller
         }
 
         $user = Client::where('pin_code',$request->pin_code)->where('pin_code','!=',0)->first();
-        
+
         if($user)
         {
             $user->password = $request->password;
             $user->pin_code = null;
-            
+
             if($user->save())
             {
                 return responseJson(1,'password changed successfully');
@@ -132,33 +134,28 @@ class AuthController extends Controller
     {
         $validator = validator()->make($request->all(),[
             'phone' => Rule::unique('clients')->ignore($request->user()->id),
-            'email' => Rule::unique('clients')->ignore($request->user()->id),            
+            'email' => Rule::unique('clients')->ignore($request->user()->id),
         ]);
-
         if($validator->fails())
         {
             return responseJson(0,'validator error',$validator->errors()->first());
         }
-        
         $loginUser = $request->user();
         $loginUser->update($request->all());
         $loginUser->save();
-
         if($request->has('governorate_id'))
         {
               $loginUser->cities()->sync($request->city_id);
         }
-
         if($request->has('blood_type'))
         {
             $bloodType = BloodType::where('name',$request->blood_type)->first();
             $bloodType->bloodType()->sync($request->blood_type);
         }
-    
         return responseJson(1,'successfull',[
             'api_token'=>$request->user()->api_token,
             'user' => $loginUser
-            ]);        
+            ]);
     }
 
     public function register_token(Request $request)
@@ -167,11 +164,9 @@ class AuthController extends Controller
             'token' => 'required',
             'platform' => 'required|in:android,ios'
         ]);
-
         if($validation->fails()){
             return responseJson(0 , $validation->errors()->first());
         }
-
         Token::where('token',$request->token)->delete();
         $request->user()->token()->create($request->all());
         return responseJson(1 , 'success');
@@ -182,13 +177,11 @@ class AuthController extends Controller
         $validation = validator()->make($request->all(),[
             'token' => 'required'
         ]);
-
         if($validation->fails()){
             return responseJson(0 , $validation->errors()->first());
         }
-
         Token::where('token',$request->token)->delete();
         return responseJson(1 , 'success');
     }
-    
+
 }

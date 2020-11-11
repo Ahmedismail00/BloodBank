@@ -4,11 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ClientFavouritePost extends Model 
+class ClientPost extends Model
 {
 
     protected $table = 'client_post';
     public $timestamps = true;
     protected $fillable = array('client_id', 'post_id');
+
+    public function clients()
+    {
+        return $this->belongsToMany('App\Models\Client');
+    }
 
 }

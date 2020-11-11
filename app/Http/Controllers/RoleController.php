@@ -39,7 +39,6 @@ class RoleController extends Controller
     {
         $rules = [
             'name' =>'required|unique:roles',
-            'description' => 'required',
             'permission_list' => 'required|array'
         ];
         $messages = [
@@ -88,7 +87,6 @@ class RoleController extends Controller
     {
         $rules = [
             'name' =>'required|unique:roles,name,'.$id,
-            'description' => 'required',
             'permission_list' => 'required|array'
         ];
         $messages = [

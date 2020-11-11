@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Client;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Governorate;
@@ -49,7 +51,8 @@ class MainController extends Controller
         $categories = Category::all();
         return ResponseJson(1,'success',$categories);
     }
-    public function donation_request_create(Request $request)
+
+    public function create_donation_request(Request $request)
     {
         $validator = validator()->make($request->all(),[
             'patient_name' => 'required',
@@ -65,28 +68,26 @@ class MainController extends Controller
             return responseJson(0 , 'unsuccessful' , $validator->errors()->all());
         }
         $donation_request = $request->user()->donationRequest()->Create($request->all());
-        $clientIds = $donation_request->city->governorate->clients()->whereHas('bloodType',function($q) use ($request){
+        $clientIds = $donation_request->city->governorate->clients()
+            ->whereHas('bloodType',function($q) use ($request){
             $q->where('blood_types.id',$request->blood_type_id);
         })->pluck('clients.id')->toArray();
-
-        dd($clientIds);
-
-        if (count($clientIds)) 
+        if (count($clientIds))
         {
-            $notification = $donation_request->notificaions()->create([
+            $notification = $donation_request->notifications()->create([
                 'title'=>  'احتاج متبرع ',
-                'content'=> $donation_request->bloodType()->name . ' محتاج متبرع لفصيلة'
+                'content'=> $donation_request->bloodType->name . ' محتاج متبرع لفصيلة',
+                'client_id' => $request->client_id
             ]);
             $notification->clients()->attach($clientIds);
 
             // get token for FCM (push notification using firebasse cloud)
-            
+            $tokens = Token::whereIn('client_id',$clientIds)->where('token','!=','')->whereIn('client_id');
+
         }
-
-
-
-        
     }
+
+
     public function contact(Request $request)
     {
         $validator = validator()->make($request->all(),[
@@ -102,25 +103,27 @@ class MainController extends Controller
         return responseJson('1','success' , $contact);
     }
 
-    public function postFavourite(Request $request)
+    public function post_favourite(Request $request)
     {
         $validation = validator()->make($request->all(),[
             'post_id' => 'required|exists:posts,id'
         ]);
-
         if($validation->fails()){
             return responseJson(0,$validation->errors()->first());
         }
-
-        $toggle = $request->user()->posts()->toggle($request->post_id);
-        return responseJson(1,'success',$toggle);
+        $toggle = $request->user()->favourites()->toggle($request->post_id);
+        return responseJson(1 , 'loaded' , $toggle);
     }
-    
-    public function myFavourites(Request $request)
+
+    public function favourites_posts(Request $request)
     {
-        $posts = $request->user()->posts()->latest()->paginate(20);
+        $posts = $request->user()->favourites()->latest()->paginate(20);
         return responseJson(1 , 'loaded' , $posts);
     }
 
-
+    public function settings()
+    {
+        $settings = Setting::all();
+        return ResponseJson(1,'success',$settings);
+    }
 }
