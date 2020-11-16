@@ -119,6 +119,7 @@ class PostsController extends Controller
         }else{
             $image_name = 'No image';
         }
+        File::delete('uploads/posts_images/'.$record->image);
         $record->update([
             'title' => $request->title,
             'image' => $image_name,

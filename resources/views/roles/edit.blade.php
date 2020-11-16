@@ -38,7 +38,8 @@
                  'class' =>'form-control'
                 ]) !!}
             </div>
-            <input type="checkbox" id="select-all"><label for="selectAll" class="ml-1">Select All</label>
+            <input type="checkbox" id="select-all">
+            <label for="selectAll" class="ml-1">Select All</label>
             <div class="row">
                 @foreach($permissions->all() as $permission)
                     <div class=" col-sm-3 col-md-3">

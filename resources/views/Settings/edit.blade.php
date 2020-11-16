@@ -39,20 +39,63 @@
                     'rows' => '2',
                     'class' =>'form-control'
                 ]) !!}
+                <label for="intro">Intro</label>
+                {!! Form::textarea('intro', '' , [
+                    'rows' => '2',
+                    'class' =>'form-control'
+                ]) !!}
+                <label for="fotter">Fotter</label>
+                {!! Form::textarea('fotter', '' , [
+                    'rows' => '2',
+                    'class' =>'form-control'
+                ]) !!}
+                <label for="slider_title">Slider Title</label>
+                {!! Form::text('slider_title', null , [
+                    'class' =>'form-control'
+                ]) !!}
+                <label for="slider_text">Slider Text</label>
+                {!! Form::textarea('slider_text', '' , [
+                    'rows' => '2',
+                    'class' =>'form-control'
+                ]) !!}
                 <label for="phone">Phone</label>
                 {!! Form::text('phone', null , [
                     'class' =>'form-control'
-                ]) !!}<label for="email">Email</label>
+                ]) !!}
+                <label for="email">Email</label>
                 {!! Form::text('email', null , [
                     'class' =>'form-control'
-                ]) !!}<label for="tw_link">Twiiter Link</label>
+                ]) !!}
+                <label for="tw_link">Twiiter Link</label>
                 {!! Form::text('tw_link', null , [
                     'class' =>'form-control'
-                ]) !!}<label for="insta_link">Instgram Link</label>
+                ]) !!}
+                <label for="insta_link">Instgram Link</label>
                 {!! Form::text('insta_link', null , [
                     'class' =>'form-control'
-                ]) !!}<label for="facebook_link">Facebook Link</label>
+                ]) !!}
+                <label for="facebook_link">Facebook Link</label>
                 {!! Form::text('facebook_link', null , [
+                    'class' =>'form-control'
+                ]) !!}
+                <label for="google_plus_link">Googel Plus Link</label>
+                {!! Form::text('google_plus_link', null , [
+                    'class' =>'form-control'
+                ]) !!}
+                <label for="youtube_link">Youtube Link</label>
+                {!! Form::text('youtube_link', null , [
+                    'class' =>'form-control'
+                ]) !!}
+                <label for="whatsapp_link">Whats App Link</label>
+                {!! Form::text('whatsapp_link', null , [
+                    'class' =>'form-control'
+                ]) !!}
+                <label for="google_play_link">Google Play Link</label>
+                {!! Form::text('google_play_link', null , [
+                    'class' =>'form-control'
+                ]) !!}
+                <label for="app_store_link">App Store Link</label>
+                {!! Form::text('app_store_link', null , [
                     'class' =>'form-control'
                 ]) !!}
             </div>

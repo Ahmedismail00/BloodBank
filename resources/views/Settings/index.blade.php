@@ -39,6 +39,22 @@
                         <td>{{$record->about_app}}</td>
                     </tr>
                     <tr>
+                        <th scope="row">Intro</th>
+                        <td>{{$record->intro}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Footer</th>
+                        <td>{{$record->footer}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Slider Title</th>
+                        <td>{{$record->slider_title}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Slider Text</th>
+                        <td>{{$record->slider_text}}</td>
+                    </tr>
+                    <tr>
                         <th scope="row">Email</th>
                         <td>{{$record->email}}</td>
                     </tr>
@@ -57,6 +73,26 @@
                     <tr>
                         <th scope="row">Instgram Link</th>
                         <td>{{$record->insta_link}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Google Plus Link</th>
+                        <td>{{$record->google_plus_link}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Youtube Link</th>
+                        <td>{{$record->youtube_link}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Whats App Link</th>
+                        <td>{{$record->whatsapp_link}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Google Play Link</th>
+                        <td>{{$record->google_play_link}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">App Store Link</th>
+                        <td>{{$record->app_store_link}}</td>
                     </tr>
                     </tbody>
                     @endforeach

@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Support\Arr;
 
 class Handler extends ExceptionHandler
 {
@@ -30,7 +31,7 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
+     * @param \Exception $exception
      * @return void
      *
      * @throws \Exception
@@ -43,8 +44,8 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param \Illuminate\Http\Request $request
+     * @param \Exception $exception
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Exception
@@ -53,8 +54,25 @@ class Handler extends ExceptionHandler
     {
         return parent::render($request, $exception);
     }
-    public function unauthenticated($request , AuthenticationException $exception)
+
+    public function unauthenticated($request, AuthenticationException $exception)
     {
-        return $request->expectsJson()?responseJson(0,'unauthenticated'):redirect()->guest($exception->redirectTo()??route('login'));
+        if ($request->expectsJson()) {
+            responseJson(0, 'unauthenticated');
+            $guard = Arr::get($exception->guards(), 0);
+            switch ($guard) {
+                case 'web':
+                    $login = 'login';
+                    break;
+                case 'client':
+                    $login = 'sign_in';
+                    break;
+                default:
+                    $login = 'login';
+                    break;
+            }
+            return redirect()->guest(route($login));
+        }
     }
 }
+

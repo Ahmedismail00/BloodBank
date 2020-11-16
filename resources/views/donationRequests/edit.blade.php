@@ -1,8 +1,14 @@
 @extends('layouts.app')
+@inject('bloodType','App\Models\BloodType')
+@inject('city','App\Models\City')
+<?php
+$blood_types = $bloodType->pluck('name','id')->toArray();
+$cities = $city->pluck('name','id')->toArray();
+?>
 @section('content')
 <!-- Content Header (Page header) -->
 @section('page_title')
-  Donation Requests 
+  Donation Requests
 @endsection
 @section('small_title')
     list of Donation Requests
@@ -23,7 +29,7 @@
           </div>
         </div>
         <div class="card-body">
-           
+
             {!! Form::model($model,[
                'action'=> ['DonationRequestsController@update',$model->id],
                'method' => 'put'
@@ -37,18 +43,18 @@
                 {!! Form::text('patient_phone', null , [
                     'class' =>'form-control'
                 ]) !!}
-                {{-- <label for="name">City</label>
-                {!! Form::text('name', null , [
+                <label for="city">City</label>
+                {!! Form::select('city', $cities ,'1', [
                     'class' =>'form-control'
-                ]) !!} --}}
+                ]) !!}
                 <label for="hospital_name">Hospital Name</label>
                 {!! Form::text('hospital_name', null , [
                     'class' =>'form-control'
                 ]) !!}
-                {{-- <label for="name">Blood Type</label>
-                {!! Form::text('name', null , [
+                <label for="blood_type">Blood Type</label>
+                {!! Form::select('blood_type', $blood_types,'1', [
                     'class' =>'form-control'
-                ]) !!} --}}
+                ]) !!}
                 <label for="patient_age">Patien Age</label>
                 {!! Form::select('patient_age',range(0,100), '1', [
                   'class' =>'form-control'
@@ -73,7 +79,7 @@
                 ]) !!}
             </div>
             {!! Form::close() !!}
-            
+
         </div>
         <!-- /.card-body -->
         <div class="card-footer">

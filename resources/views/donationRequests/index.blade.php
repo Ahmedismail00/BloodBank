@@ -1,4 +1,6 @@
 @extends('layouts.app')
+@inject('bloodType','App\Models\BloodType')
+@inject('city','App\Models\City')
 @section('content')
 <!-- Content Header (Page header) -->
 @section('page_title')
@@ -31,8 +33,8 @@
                         <th scope="col">#</th>
                         <th scope="col">Patient Name</th>
                         <th scope="col">Patient Phone</th>
-                        {{-- <th scope="col">City</th> --}}
-                        {{-- <th scope="col">Blood Type</th> --}}
+                         <th scope="col">City</th>
+                         <th scope="col">Blood Type</th>
                         <th scope="col">Patien Age</th>
                         <th scope="col">Bags Number</th>
                         <th scope="col">Hospital Address</th>
@@ -47,8 +49,8 @@
                                 <th>{{$loop->iteration}}</th>
                                 <td>{{$record->patient_name}}</td>
                                 <td>{{$record->patient_phone}}</td>
-                                {{-- <td>{{$record->city_id}}</td> --}}
-                                {{-- <td>{{$record->blood_type_id}}</td> --}}
+                                 <td>{{$city->where('id',$record->city_id)->pluck('name')->first()}}</td>
+                                 <td>{{$bloodType->where('id',$record->blood_type_id)->pluck('name')->first()}}</td>
                                 <td>{{$record->patient_age}}</td>
                                 <td>{{$record->bags_num}}</td>
                                 <td>{{$record->hospital_address}}</td>
@@ -67,11 +69,11 @@
                     </tbody>
                   </table>
             </div>
-            
+
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
-            
+
         </div>
         <!-- /.card-footer-->
       </div>
