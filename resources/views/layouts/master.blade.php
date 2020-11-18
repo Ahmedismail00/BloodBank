@@ -52,7 +52,7 @@
 
                     <!-- not a member-->
                     <div class="col-md-4">
-                        @if(!\Illuminate\Support\Facades\Auth::check())
+                        @if(!\Illuminate\Support\Facades\Auth::guard('client')->check())
                         <div class="info" dir="ltr">
                             <div class="phone">
                                 <i class="fas fa-phone-alt"></i>
@@ -68,11 +68,11 @@
                                 <p class="welcome">مرحباً بك</p>
                                 <div class="dropdown">
                                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        {{auth()->user()->name}}
+                                        {{auth()->guard('client')->user()->name}}
                                         <i class="fas fa-chevron-down"></i>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="{{url(route('profile.edit',auth()->user()->id))}}">
+                                        <a class="dropdown-item" href="{{url(route('profile.edit',auth()->guard('client')->user()->id))}}">
                                             <i class="far fa-user"></i>
                                             معلوماتى
                                         </a>
@@ -131,7 +131,7 @@
                             </li>
                         </ul>
 
-                        @if(!\Illuminate\Support\Facades\Auth::check())
+                        @if(!\Illuminate\Support\Facades\Auth::guard('client')->check())
                         <div class="accounts">
                             <a href="{{url(route('sign_up'))}}" class="create">إنشاء حساب جديد</a>
                             <a href="{{url(route('sign_in'))}}" class="signin">الدخول</a>

@@ -39,7 +39,7 @@ Route::group(['namespace'=>'Front'],function(){
 Auth::routes([
 
 ]);
-Route::group(['middleware'=> ['auth:web','auto-check-permission']],function(){
+Route::group(['middleware'=> ['auth:web','auto-check-permission','guest']],function(){
     Route::get('/home', 'HomeController@index')->name('home');
     Route::resource('categories', 'CategoriesController');
     Route::resource('cities', 'CitiesController');

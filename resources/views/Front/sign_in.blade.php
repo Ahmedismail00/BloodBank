@@ -15,6 +15,8 @@
                     <div class="logo">
                         <img src="{{asset('Front/imgs/logo.png')}}">
                     </div>
+                    @include('partials.validation_errors')
+                    @include('flash::message')
                     {!! Form::open([
                             'action' => 'Front\AuthController@sign_in_save',
                             'method' => 'post'
@@ -33,7 +35,8 @@
                                 'id' => 'exampleInputEmail1',
                                 'placeholder'=>'كلمة المرور',
                                 'required' => 'required',
-                                'aria-describedby' => 'emailHelp'
+                                'aria-describedby' => 'emailHelp',
+                                'minlength'=>'8'
                         ]) !!}
                     </div>
                     <div class="row options">

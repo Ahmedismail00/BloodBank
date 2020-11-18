@@ -22,6 +22,8 @@ $governorates = $governorate->get();
                         </nav>
                     </div>
                     <div class="account-form">
+                        @include('partials.validation_errors')
+
                         {!! Form::model($model,[
                             'action'=> ['Front\ProfileController@update',$model->id],
                             'method' => 'put',
@@ -109,7 +111,7 @@ $governorates = $governorate->get();
         @push('script')
             <script>
                 $('#cities').empty();
-                $('#cities').append('<option value="">اختار مدينة</option>')
+                $('#cities').append('<option value="">اختار محافظة اولا</option>')
                 $('#governorates').change(function(e){
                     e.preventDefault();
                     var governorate_id = $('#governorates').val();

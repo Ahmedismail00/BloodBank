@@ -8,6 +8,7 @@ use App\Models\City;
 use App\Models\Client;
 use App\Models\Governorate;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -76,12 +77,20 @@ class ProfileController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'name' =>'required',
-            'email' =>'required',
+            'phone' => Rule::unique('clients')->ignore($id),
+            'email' => Rule::unique('clients')->ignore($id),
             'password' =>'required|confirmed|min:8',
             'password_confirmation'=>'required',
+            'last_donation_date' => 'required',
+            'd_o_b' => 'required',
+            'city_id'=>'required'
         ];
-        $this->validate($request,$rules);
+        $messages = [
+            'phone.unique' => 'هذا الهاتف مستخدم من قبل',
+            'email.unique' => 'هذا البريد مستخدم من قبل',
+            'city_id.required' => 'يجب عليك اختيار مدينة'
+        ];
+        $this->validate($request,$rules,$messages);
         $request->merge(['password'=>bcrypt($request->password)]);
         $record = Client::findorfail($id);
         $record->update($request->all());

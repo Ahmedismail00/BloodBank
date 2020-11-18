@@ -105,7 +105,7 @@
     @push('script')
         <script>
             $('#cities').empty();
-            $('#cities').append('<option value="">اختار مدينة</option>')
+            $('#cities').append('<option value="">اختار محافظة اولا</option>')
             $('#governorates').change(function(e){
                e.preventDefault();
                var governorate_id = $('#governorates').val();

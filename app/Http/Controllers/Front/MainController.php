@@ -14,13 +14,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MainController extends Controller
 {
-    public function __construct()
-    {
-        if (Auth::check()){
-            $this->middleware('auth:client');
-        }
 
-    }
     public function home()
     {
         $posts = Post::take(9)->get();

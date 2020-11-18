@@ -14,7 +14,6 @@ class Client extends Authenticatable
     public $timestamps = true;
     protected $fillable = array('phone', 'email', 'blood_type_id', 'name', 'd_o_b', 'last_donation_date', 'city_id', 'api_token', 'password','pin_code');
     protected $hidden = [ 'password', 'remember_token','api_token','pin_code' ];
-    protected $guard ='client';
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);

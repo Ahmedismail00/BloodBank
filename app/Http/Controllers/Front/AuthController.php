@@ -31,9 +31,15 @@ class AuthController extends Controller
             'phone' => 'required|unique:clients',
             'last_donation_date' => 'required',
             'd_o_b' => 'required',
-            'email' =>'required|unique:clients'
+            'email' =>'required|unique:clients',
+            'city_id'=>'required|exists:cities'
         ];
-        $this->validate($request,$rules);
+        $messages = [
+            'phone.unique' => 'هذا الهاتف مستخدم من قبل',
+            'email.unique' => 'هذا البريد مستخدم من قبل',
+            'city_id.required' => 'يجب عليك اختيار مدينة'
+        ];
+        $this->validate($request,$rules,$messages);
         $client = Client::create($request->all());
         $client->bloodType()->sync($request->blood_type_id);
         $governorate_id = City::where('id',$request->city_id)->pluck('governorate_id');
@@ -46,12 +52,18 @@ class AuthController extends Controller
     public function sign_in_save( Request $request)
     {
         $this->validate($request, [
-            'phone' => 'required'
+            'phone' => 'required|exists:clients'
+        ],[
+            'phone.exists'=> 'هذا الهاتف غير مسجل'
         ]);
         if (Auth::guard('client')->attempt(['phone' => $request->phone, 'password' => $request->password]))
         {
             return redirect()->intended(route('home_page'));
         }
+        if (Client::where('phone',$request->phone)->where('password','!=',$request->password)){
+            flash('كلمة المرور خاطئة');
+        }
+
         return redirect()->back()->withInput($request->only('phone'));
     }
     public function sign_out()
