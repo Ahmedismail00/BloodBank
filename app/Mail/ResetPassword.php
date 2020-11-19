@@ -7,11 +7,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class reset_password extends Mailable
+class ResetPassword extends Mailable
 {
     use Queueable, SerializesModels;
 
     private $code ;
+
     /**
      * Create a new message instance.
      *
@@ -29,6 +30,6 @@ class reset_password extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.reset.password',['code' => $this->code ]);
+        return $this->markdown('emails.auth.reset',['code'=> $this->code]);
     }
 }

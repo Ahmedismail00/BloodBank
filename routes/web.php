@@ -10,15 +10,15 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::group(['namespace'=>'Front'],function(){
+Route::group(['namespace'=>'Front','prefix'=>'user'],function(){
     Route::get('/','MainController@home')->name('home_page');
     Route::get('About-us','MainController@about_us')->name('about_us');
     Route::get('contact-us','MainController@contact_us')->name('contact_us');
     Route::get('contact-us-send','MainController@contact_us_send')->name('contact_us_send');
     Route::get('article-details/{id}','MainController@article_details')->name('aricle_details');
-    Route::get('sign-up','AuthController@sign_up')->name('sign_up');
+    Route::get('sign-up','AuthController@sign_up')->name('sign_up')->middleware('guest:client');;
     Route::Post('sign-up-save','AuthController@sign_up_save')->name('sign_up_save');
-    Route::get('sign-in','AuthController@sign_in')->name('sign_in');
+    Route::get('sign-in','AuthController@sign_in')->name('sign_in')->middleware('guest:client');
     Route::post('sign-in-save','AuthController@sign_in_save')->name('sign_in_save');
     Route::get('sign-out','AuthController@sign_out')->name('sign_out');
     Route::get('donations-search','MainController@donations_search')->name('donations_search');
@@ -39,7 +39,8 @@ Route::group(['namespace'=>'Front'],function(){
 Auth::routes([
 
 ]);
-Route::group(['middleware'=> ['auth:web','auto-check-permission','guest']],function(){
+
+Route::group(['middleware'=> ['auth:web','auto-check-permission']],function(){
     Route::get('/home', 'HomeController@index')->name('home');
     Route::resource('categories', 'CategoriesController');
     Route::resource('cities', 'CitiesController');

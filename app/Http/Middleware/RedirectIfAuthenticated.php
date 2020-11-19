@@ -18,16 +18,12 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        switch ($guard) {
-            case 'web':
-                if (Auth::guard($guard)->check()) {
-                    return redirect(RouteServiceProvider::HOME);
-                }
-            case 'client':
-                if (Auth::guard($guard)->check()) {
-                    return redirect(route('home_page'));
-                }
-            break;
+
+        if (Auth::guard('web')->check()) {
+            return redirect('/home');
+        }
+        elseif (Auth::guard('client')->check()) {
+            return redirect(route('home_page'));
         }
 
         return $next($request);

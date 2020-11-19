@@ -79,8 +79,17 @@
                                         <a href="{{url('article-details/'.$post->id)}}" class="click">المزيد</a>
                                     </div>
                                     <div class="favourite">
-                                        <i id="{{$post->id}}" onclick="toogleFavourite(this)" class="far fa-heart first-heart"></i>
-                                        {{--<i onclick="toogleFavourite(this)" class="far fa-heart second-heart"></i>--}}
+                                        <i id="{{$post->id}}" onclick="toogleFavourite(this)" class="far fa-heart
+                                       @if(\Illuminate\Support\Facades\Auth::guard('client')->check())
+                                            @if($post->is_favourite)
+                                            second-heart
+                                            @else()
+                                            first-heart
+                                            @endif()
+                                        @else
+                                            first-heart
+                                        @endif
+                                            "></i>
                                     </div>
                                     <div class="card-body">
                                         <h5 class="card-title">{{$post->title}}</h5>
@@ -154,7 +163,7 @@
                         @endforeach
                     </div>
                     <div class="more">
-                        <a href="donation-requests.html">المزيد</a>
+                        <a href="{{url(route('donation_requests'))}}">المزيد</a>
                     </div>
                 </div>
             </div>

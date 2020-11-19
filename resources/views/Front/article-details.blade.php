@@ -21,7 +21,18 @@
                             <h4>{{$article->title}}</h4>
                         </div>
                         <div class="icon col-6">
-                            <button type="button"><i class="far fa-heart"></i></button>
+                            <button type="button" onclick="toogleFavourite(this)" class="favourite
+                                @if(\Illuminate\Support\Facades\Auth::guard('client')->check())
+                                    @if($article->is_favourite)
+                                        second-heart
+                                    @else()
+                                        first-heart
+                                    @endif()
+                                @else
+                                    first-heart
+                                @endif" id="{{$article->id}}">
+                                <i  class="far fa-heart"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -50,8 +61,18 @@
                                             <a href="article-details.html" class="click">المزيد</a>
                                         </div>
                                         <div class="favourite">
-                                            <i id="{{$post->id}}" onclick="toogleFavourite(this)" class="far fa-heart first-heart"></i>
-                                            {{--<i onclick="toogleFavourite(this)" class="far fa-heart second-heart"></i>--}}
+                                            <i id="{{$post->id}}" onclick="toogleFavourite(this)" class="far fa-heart
+                                                @if(\Illuminate\Support\Facades\Auth::guard('client')->check())
+                                                    @if($post->is_favourite)
+                                                        second-heart
+                                                    @else()
+                                                        first-heart
+                                                    @endif()
+                                                @else
+                                                    first-heart
+                                                @endif
+                                            "></i>
+
                                         </div>
 
                                         <div class="card-body">

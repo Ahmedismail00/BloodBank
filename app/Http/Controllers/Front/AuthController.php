@@ -14,7 +14,6 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-
     public function sign_in()
     {
         return view('Front.sign_in');
@@ -51,12 +50,13 @@ class AuthController extends Controller
     }
     public function sign_in_save( Request $request)
     {
+        $remember_me = (!empty($request->remember))?true:false;
         $this->validate($request, [
             'phone' => 'required|exists:clients'
         ],[
             'phone.exists'=> 'هذا الهاتف غير مسجل'
         ]);
-        if (Auth::guard('client')->attempt(['phone' => $request->phone, 'password' => $request->password]))
+        if (Auth::guard('client')->attempt(['phone' => $request->phone, 'password' => $request->password],$remember_me))
         {
             return redirect()->intended(route('home_page'));
         }

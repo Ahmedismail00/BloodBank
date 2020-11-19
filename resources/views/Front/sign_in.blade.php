@@ -42,10 +42,10 @@
                     <div class="row options">
                         <div class="col-md-6 remember">
                             <div class="form-group form-check">
-                                {!! Form::checkbox('password',null, [
+                                {!! Form::checkbox('remember',null, [
                                     'class' =>'form-check-input',
                                     'id' => 'exampleCheck1',
-                                    'placeholder'=>'كلمة المرور',
+                                    'value'=>"1"
                                 ]) !!}
                                 <label class="form-check-label" for="exampleCheck1">تذكرنى</label>
                             </div>

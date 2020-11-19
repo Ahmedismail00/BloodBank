@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Mail\ResetPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
@@ -79,18 +80,20 @@ class AuthController extends Controller
         $user = Client::where('phone',$request->phone)->first();
         if($user){
             $code = rand(1111,999);
-            $user->pin_code = $code;
+            $update = $user->update(['pin_code' => $code]);
 
-            if($user->save())
+            if($update)
             {
-                smsMisr($request->phone,'ur request code is '.$code);       // sms
+                //smsMisr($request->phone,'ur request code is '.$code);       // sms
 
-                // Mail::to($request->email)->bcc('ahmed.ismail11199@gmail.com')->send(new reset_password($code));  // mail
+                 Mail::to($user->email)
+                ->bcc('ahmed.ismail11199@gmail.com')
+                ->send(new ResetPassword($code));  // mail
 
                 return responseJson(1 , 'check ur phone' ,
                  [
                      'pin_code_for_test' => $code,
-                     'mail_fails' => Mail::failures(),
+                     'mail_fails' => Mail::failures()
                  ]);
             }else
             {

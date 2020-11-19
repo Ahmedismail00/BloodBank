@@ -1497,6 +1497,21 @@ signin-account .form .signin-form .options .remember .form-check form-check-inpu
     justify-content: center;
     cursor: pointer;
 }
+.article-details .inside-article .article-title .icon  .first-heart {
+
+    background-color: #2d3e50;
+
+    color: #FFF;
+
+}
+
+.article-details .inside-article .article-title .icon  .second-heart {
+
+    background-color: #dd0000;
+
+    color: #FFF;
+
+}
 
 .article-details .inside-article .text{
     background-color: #FFF;

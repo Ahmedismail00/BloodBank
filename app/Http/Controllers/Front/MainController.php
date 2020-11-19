@@ -18,7 +18,7 @@ class MainController extends Controller
     public function home()
     {
         $posts = Post::take(9)->get();
-        $donation_requests = DonationRequest::paginate(20);
+        $donation_requests = DonationRequest::paginate(4);
         $blood_types = BloodType::get()->all();
         $cities = City::get()->all();
         $settings = Setting::get()->first();
@@ -26,7 +26,7 @@ class MainController extends Controller
     }
     public function donation_requests()
     {
-        $donation_requests = DonationRequest::paginate(20);
+        $donation_requests = DonationRequest::paginate(2);
 
         return view('Front.donation-requests',compact('donation_requests'));
     }
@@ -60,7 +60,7 @@ class MainController extends Controller
     public function donations_search(Request $request)
     {
         $donation_requests = DonationRequest::where('blood_type_id',$request->get('blood_type_id'))
-            ->where('city_id',$request->get('city_id'))->get();
+            ->where('city_id',$request->get('city_id'))->paginate(2);
 
         return view('Front.donation-requests',compact('donation_requests'));
     }
