@@ -93,6 +93,7 @@
         @push('script')
             <script>
                 function toogleFavourite(heart){
+                    @if(\Illuminate\Support\Facades\Auth::guard('client')->check())
                     var post_id = heart.id;
                     $.ajax({
                         url : '{{url(route('toggle-favourite'))}}',
@@ -107,6 +108,9 @@
                             }
                         }
                     });
+                    @else
+                    alert('please login first')
+                    @endif
 
                 }
             </script>

@@ -1,6 +1,12 @@
 @extends('layouts.master')
 @inject('bloodType','App\Models\BloodType')
 @inject('city','App\Models\City')
+@inject('governorate','App\Models\Governorate')
+<?php
+$blood_types = $bloodType->get();
+$cities = $city->get();
+$governorates = $governorate->get();
+?>
 
 @section('content')
         <!--intro-->
@@ -76,7 +82,7 @@
                                 <div class="card">
                                     <div class="photo">
                                         <img src="{{asset('uploads/posts_images/'.$post->image)}}" class="card-img-top" width="30" alt="..." >
-                                        <a href="{{url('article-details/'.$post->id)}}" class="click">المزيد</a>
+                                        <a href="{{url('user/article-details/'.$post->id)}}" class="click">المزيد</a>
                                     </div>
                                     <div class="favourite">
                                         <i id="{{$post->id}}" onclick="toogleFavourite(this)" class="far fa-heart
@@ -114,29 +120,46 @@
             </div>
             <div class="content">
                 <div class="container">
-                    <form class="row filter" method="get" action="{{route('donations_search')}}">
-                        <div class="col-md-5 blood">
+                    <div class="content">
+                        {!! Form::open([
+                            'action'=>'Front\MainController@donations_search',
+                            'method' => 'get',
+                            'class' => 'row filter'
+                        ]) !!}
+                        <div class="col-md-3 blood">
                             <div class="form-group">
                                 <div class="inside-select">
-                                    <select class="form-control" id="exampleFormControlSelect1">
-                                        <option selected disabled>اختر فصيلة الدم</option>
-                                        @foreach($blood_types as $blood_type)
-                                        <option>{{$blood_type->name}}</option>
-                                        @endforeach
-                                    </select>
+                                    {!! Form::select('blood_type_id',$blood_types->pluck('name','id')->toArray(),null,[
+                                        'class' => 'form-control',
+                                        'placeholder'=> 'فصيلة الدم',
+                                        'required'=>'required'
+                                    ])!!}
                                     <i class="fas fa-chevron-down"></i>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-5 city">
+                        <div class="col-md-3 city">
                             <div class="form-group">
                                 <div class="inside-select">
-                                    <select class="form-control" id="exampleFormControlSelect1">
-                                        <option selected disabled>اختر المدينة</option>
-                                        @foreach($cities as $city)
-                                        <option>{{$city->name}}</option>
-                                        @endforeach
-                                    </select>
+                                    {!! Form::select('governorate_id',$governorates->pluck('name','id')->toArray(),null,[
+                                        'class' => 'form-control',
+                                        'id' => 'governorate',
+                                        'placeholder'=> 'المحافظة',
+                                        'required'=>'required'
+                                        ])!!}
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 city">
+                            <div class="form-group">
+                                <div class="inside-select">
+                                    {!! Form::select('city_id',$cities->pluck('name','id')->toArray(),null,[
+                                        'class' => 'form-control',
+                                        'id' => 'city',
+                                        'placeholder'=> 'اختار مدينة',
+                                        'required'=>'required'
+                                        ])!!}
                                     <i class="fas fa-chevron-down"></i>
                                 </div>
                             </div>
@@ -146,7 +169,7 @@
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
-                    </form>
+                        {!! Form::close() !!}
                     <div class="patients">
                         @foreach($donation_requests as $donation_request)
                         <div class="details">
@@ -220,23 +243,59 @@
         </div>
         @push('script')
             <script>
-                function toogleFavourite(heart){
-                    var post_id = heart.id;
-                    $.ajax({
-                        url : '{{url(route('toggle-favourite'))}}',
-                        type: 'post',
-                        data : {_token:"{{csrf_token()}}",post_id: post_id},
-                        success : function($data){
-                            var currentClass = $(heart).attr('class');
-                            if(currentClass.includes('first')){
-                                $(heart).removeClass('first-heart').addClass('second-heart');
-                            } else {
-                                $(heart).removeClass('second-heart').addClass('first-heart');
-                            }
-                        }
-                    });
 
-                }
+                    function toogleFavourite(heart){
+                        @if(\Illuminate\Support\Facades\Auth::guard('client')->check())
+                        var post_id = heart.id;
+                        $.ajax({
+                            url : '{{url(route('toggle-favourite'))}}',
+                            type: 'post',
+                            data : {_token:"{{csrf_token()}}",post_id: post_id},
+                            success : function($data){
+                                var currentClass = $(heart).attr('class');
+                                if(currentClass.includes('first')){
+                                    $(heart).removeClass('first-heart').addClass('second-heart');
+                                } else {
+                                    $(heart).removeClass('second-heart').addClass('first-heart');
+                                }
+                            }
+                        });
+                        @else
+                        alert('please login first')
+                        @endif
+                    }
+
             </script>
+            @endpush
+            @push('script')
+                <script>
+                    $('#city').empty()
+                    $('#city').append('<option value="">المدينة</option><option disabled>اختار محافظة اولا</option>')
+                    $('#governorate').change(function (e){
+                        e.preventDefault();
+                        var governorate_id = $('#governorate').val();
+                        if (governorate_id)
+                        {
+                            $.ajax({
+                                url: '{{url('api/v1/cities?governorate_id=')}}'+governorate_id,
+                                type: 'get',
+                                success : function (data) {
+                                    if(data.status == 1){
+                                        $('#city').empty();
+                                        $('#city').append('<option value="" disabled>اختار مدينة</option>')
+                                        $.each(data.data,function(name , city){
+                                            $('#city').append('<option value="'+city.id+'">'+city.name+'</option>')
+                                        })
+                                    }
+                                }
+                            })
+                        }
+                        else {
+                            $('#city').empty();
+                            $('#city').append('<option value="">اختار مدينة</option>')
+                        }
+                    })
+
+                </script>
         @endpush
 @endsection

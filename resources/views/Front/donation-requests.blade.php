@@ -1,9 +1,11 @@
 @extends('layouts.master')
 @inject('bloodType','App\Models\BloodType')
 @inject('city','App\Models\City')
+@inject('governorate','App\Models\Governorate')
 <?php
-$blood_types = $bloodType->get()->all();
-$cities = $city->get()->all();
+$blood_types = $bloodType->get();
+$cities = $city->get();
+$governorates = $governorate->get();
 ?>
 @section('content')
     <!--inside-article-->
@@ -24,29 +26,45 @@ $cities = $city->get()->all();
                         <h2>طلبات التبرع</h2>
                     </div>
                     <div class="content">
-                        <form class="row filter" method="get" action="{{route('donations_search')}}">
-                            <div class="col-md-5 blood">
+                        {!! Form::open([
+                            'action'=>'Front\MainController@donations_search',
+                            'method' => 'get',
+                            'class' => 'row filter'
+                        ]) !!}
+                            <div class="col-md-3 blood">
                                 <div class="form-group">
                                     <div class="inside-select">
-                                        <select class="form-control" id="exampleFormControlSelect1" name="blood_type_id">
-                                            <option selected disabled>اختر فصيلة الدم</option>
-                                            @foreach($blood_types as $blood_type)
-                                                <option value="{{$blood_type->id}}">{{$blood_type->name}}</option>
-                                            @endforeach
-                                        </select>
+                                        {!! Form::select('blood_type_id',$blood_types->pluck('name','id')->toArray(),null,[
+                                            'class' => 'form-control',
+                                            'placeholder'=> 'فصيلة الدم',
+                                            'required'=>'required'
+                                        ])!!}
                                         <i class="fas fa-chevron-down"></i>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-5 city">
+                            <div class="col-md-3 city">
                                 <div class="form-group">
                                     <div class="inside-select">
-                                        <select class="form-control" id="exampleFormControlSelect1" name="city_id">
-                                            <option selected disabled>اختر المدينة</option>
-                                            @foreach($cities as $city)
-                                                <option value="{{$city->id}}">{{$city->name}}</option>
-                                            @endforeach
-                                        </select>
+                                        {!! Form::select('governorate_id',$governorates->pluck('name','id')->toArray(),null,[
+                                            'class' => 'form-control',
+                                            'id' => 'governorate',
+                                            'placeholder'=> 'المحافظة',
+                                            'required'=>'required'
+                                            ])!!}
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 city">
+                                <div class="form-group">
+                                    <div class="inside-select">
+                                        {!! Form::select('city_id',$cities->pluck('name','id')->toArray(),null,[
+                                            'class' => 'form-control',
+                                            'id' => 'city',
+                                            'placeholder'=> 'اختار مدينة',
+                                            'required'=>'required'
+                                            ])!!}
                                         <i class="fas fa-chevron-down"></i>
                                     </div>
                                 </div>
@@ -56,7 +74,7 @@ $cities = $city->get()->all();
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>
-                        </form>
+                        {!! Form::close() !!}
                         <div class="patients">
                             @foreach($donation_requests as $donation_request)
                             <div class="details">
@@ -83,4 +101,35 @@ $cities = $city->get()->all();
                 </div>
             </div>
         </div>
+    @push('script')
+        <script>
+            $('#city').empty()
+            $('#city').append('<option value="">المدينة</option><option disabled>اختار محافظة اولا</option>')
+            $('#governorate').change(function (e){
+                e.preventDefault();
+                var governorate_id = $('#governorate').val();
+                if (governorate_id)
+                {
+                    $.ajax({
+                        url: '{{url('api/v1/cities?governorate_id=')}}'+governorate_id,
+                        type: 'get',
+                        success : function (data) {
+                            if(data.status == 1){
+                                $('#city').empty();
+                                $('#city').append('<option value="" disabled>اختار مدينة</option>')
+                                $.each(data.data,function(name , city){
+                                    $('#city').append('<option value="'+city.id+'">'+city.name+'</option>')
+                                })
+                            }
+                        }
+                    })
+                }
+                else {
+                    $('#city').empty();
+                    $('#city').append('<option value="">اختار مدينة</option>')
+                }
+            })
+
+        </script>
+    @endpush
 @endsection

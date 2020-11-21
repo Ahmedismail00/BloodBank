@@ -92,8 +92,8 @@
                         ]) !!}
                         <div class="create-btn">
                             {!! Form::submit('ارسال', [
-                            'class' => 'btn'
-                        ])!!}
+                                'class' => 'btn'
+                            ])!!}
                         </div>
 
                         {!! Form::close() !!}
